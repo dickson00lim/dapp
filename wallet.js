@@ -1,11 +1,12 @@
 $(document).ready(function () {
+    const IPFS = window.IpfsApi('localhost', '5001');
+    const Buffer = IPFS.Buffer;
+
     const derivationPath = "m/44'/60'/0'/0/";
-   
     const provider = ethers.providers.getDefaultProvider('ropsten');
     const Contract = ethers.Contract;
-    const privateKey = '0xbdf460fa72dafb4dd75eca4d1126d4848b9517262df0c2abe7fbb773183dee08';
-
-    const contractAddress = "0x8e6ab173a0ee9567d8d2fbbd09590c58c0a5a85e";
+    const contractAddress = "0x420dec5eac3095580581ff56c4b299994480ee17";
+    const contractOwnerAddress = "0x8804FFe582C362c4c331492db19fBf5b6659c583";
     const contractABI =
         [
             {
@@ -97,6 +98,25 @@ $(document).ready(function () {
                 "constant": true,
                 "inputs": [
                     {
+                        "name": "Id",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "countHolderCertificates",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
                         "name": "hash",
                         "type": "string"
                     }
@@ -159,6 +179,7 @@ $(document).ready(function () {
 
     const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
+    var ipfsHash;
 
     let wallets = {};
 
@@ -222,6 +243,13 @@ $(document).ready(function () {
         showView("viewReadContract");
     });
 
+    $('#linkCreateNewCertificate').click(function () {
+        $('#divCreateCert').hide();
+        $('#divPrivateKeyCreateCert').show();
+        $('#privateKeyCreateCert').val('');
+
+        showView("viewAddNewCert");
+    });
     //---
 
 
@@ -237,6 +265,9 @@ $(document).ready(function () {
 
     $('#buttonUnlockReadContract').click(readFromContract);
     $('#buttonGetCertificateHolder').click(getCertificateHolder);
+
+    $('#buttonCreateCertLogIn').click(createCertLogIn);
+    $('#buttonCreateCert').click(createNewCert);
 
     function showView(viewName) {
         // Hide all views and show the selected view only
@@ -388,7 +419,8 @@ $(document).ready(function () {
     }
 
     function showAddressesAndBalances() {
-        let password = $('#passwordShowMnemonic').val();
+        debugger;
+        let password = $('#passwordShowAddresses').val();
         let json = localStorage.JSON;
         decryptWallet(json, password)
             .then(renderAddressesAndBalances)
@@ -522,10 +554,11 @@ $(document).ready(function () {
 
 
     function getCertificateHolder() {
-        debugger;
+        
         let hash = $('#imageHash').val();
 
         //make a promise to wait for the chain to retrieve the results
+        
         contract.getCertificate(hash)
             .then((certHolder) => {
                 $('#textareaCertificateHolder').val(certHolder);
@@ -536,5 +569,81 @@ $(document).ready(function () {
     }//end getCertificateHolder
 
 
+    function createCertLogIn() {
+        debugger;
+        let password = $('#passwordCreateCert').val();
 
+        decryptWallet(localStorage.JSON, password)
+            .then((wallet) => {
+                debugger;
+                //showInfo("wallet successfully loaded");
+                //showInfo(localStorage.JSON);
+            
+                if (wallet.address == contractOwnerAddress) {
+                    showInfo("successfully logged in");
+                    $('#divCreateCert').show();
+                    $('#divPrivateKeyCreateCert').hide();
+
+
+                }
+                else {
+                    showInfo("you are not the administrator");
+                }
+            });
+
+    }//end createCertLogIn
+
+
+
+    $('#documentUploadButton').click(function () {
+        debugger;
+        if ($('#documentForUpload')[0].files.length === 0) {
+            return showError("please select a file to upload");
+        }
+        let fileReader = new window.FileReader();
+
+        fileReader.onload = function () {
+
+            debugger;
+            let fileBuffer = Buffer.from(fileReader.result);
+
+            IPFS.files.add(fileBuffer, (err, result) => {
+                if (err)
+                    return showError(err);
+                if (result) {
+                     ipfsHash = result[0].hash;
+                    $('#textareaCertificateImageHash').val(ipfsHash);
+                }
+            })
+        };
+
+        fileReader.readAsArrayBuffer($('#documentForUpload')[0].files[0]);
+    })
+
+    function createNewCert() {
+        
+        let password = $('#passwordCreateCertDetails').val();
+    
+
+        decryptWallet(localStorage.JSON, password)
+            .then((wallet) => {
+                wallet.provider = ethers.providers.getDefaultProvider('ropsten');
+
+                
+                let contractCreate = new Contract(contractAddress, contractABI, wallet);
+                showInfo("wallet successfully loaded");
+
+                //--get other details for the new certificate
+                let name = $('#nameCreateCert').val();
+
+                contractCreate.addCertificate(123, name, "Blockchain", "7 May 2018", "30 days", "CET", "1 June 2018", ipfsHash)
+                    .then(txHash => {
+                        console.log(txHash)
+                    });
+
+            });
+
+  
+  
+    }//end createNewCert
 });
