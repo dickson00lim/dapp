@@ -3,14 +3,16 @@
 <html>
 
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple HD Wallet - Ethers.js</title>
-    <link rel="stylesheet" type="text/css" href="wallet.css"/>
+    <link rel="stylesheet" type="text/css" href="wallet.css" />
     <script src="lib/ethers.min.js"></script>
     <script src="lib/jquery-3.1.1.min.js"></script>
     <script src="lib/jquery.qrcode.min.js"></script>
     <script src="wallet.js"></script>
+    <script src="https://unpkg.com/ipfs-api/dist/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 </head>
 
 <body>
@@ -23,7 +25,8 @@
         <a href="#" id="linkShowAddressesAndBalances" class="after-login">View Addresses</a>
         <a href="#" id="linkSendTransaction" class="after-login">Send Transaction</a>
         <a href="#" id="linkDelete" class="after-login">Delete Wallet</a>
-        <a href="#" id="linkReadContract" class="after-login">Read from Contract</a>
+        <a href="#" id="linkReadContract" class="after-login">Get Certificate Details</a>
+        <a href="#" id="linkCreateNewCertificate" class="after-login">Add New Certificate</a>
     </header>
 
     <main>
@@ -116,6 +119,25 @@
                     <input type="button" id="buttonGetCertificateHolder" value="Get certificate holder details" />
                 </div>
                 <textarea id="textareaCertificateHolder" class="certificateHolder" readonly="true"></textarea>
+            </div>
+        </section>
+        <section id="viewAddNewCert">
+            <h1>Add New Certificates</h1>
+            <p>Only administrators can add new certificates</p>
+            <div id="divPrivateKeyCreateCert">
+                <span>Enter password: </span><input type="password" id="passwordCreateCert">
+                <input type="button" id="buttonCreateCertLogIn" value="Log In" />
+            </div>
+            <div id="divCreateCert">
+                <span>Enter password again: </span><input type="password" id="passwordCreateCertDetails"><br />
+
+                <p>Upload certificate image:</p>
+                <input type="file" id="documentForUpload" /><br />
+                <input type="button" id="documentUploadButton" value="Submit" /><br/>
+                <textarea id="textareaCertificateImageHash" class="certificateImageHash" readonly="true"></textarea>
+
+                <span>Enter name of certificate holder: </span><input type="text" id="nameCreateCert"><br />
+                <input type="button" id="buttonCreateCert" value="Create new cert" />
             </div>
         </section>
     </main>
