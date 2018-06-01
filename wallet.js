@@ -419,7 +419,6 @@ $(document).ready(function () {
     }
 
     function showAddressesAndBalances() {
-        debugger;
         let password = $('#passwordShowAddresses').val();
         let json = localStorage.JSON;
         decryptWallet(json, password)
@@ -532,8 +531,9 @@ $(document).ready(function () {
         showView('viewHome');
     }
 
-    //------------------
+    //-------------------------------------------------------------------------------
     //Method that reads from a contract
+    //Verify the password - if correct - then shows the division that will show the certificate details
     function readFromContract() {
         let password = $('#passwordReadContract').val();
         let json = localStorage.JSON;
@@ -552,13 +552,12 @@ $(document).ready(function () {
             });
     }//---end readFromContract
 
-
+    //show the details of the certificate after verifying password
     function getCertificateHolder() {
-        
         let hash = $('#imageHash').val();
 
         //make a promise to wait for the chain to retrieve the results
-        
+        //because transaction needs time to mine
         contract.getCertificate(hash)
             .then((certHolder) => {
                 $('#textareaCertificateHolder').val(certHolder);
@@ -568,68 +567,61 @@ $(document).ready(function () {
             });
     }//end getCertificateHolder
 
-
+    //verify password - before showing division to create a new certificate
     function createCertLogIn() {
-        debugger;
         let password = $('#passwordCreateCert').val();
 
         decryptWallet(localStorage.JSON, password)
             .then((wallet) => {
-                debugger;
-                //showInfo("wallet successfully loaded");
-                //showInfo(localStorage.JSON);
-            
+                showInfo("wallet successfully loaded");
+
+                //check that the wallet address is authorised to create a new contract
                 if (wallet.address == contractOwnerAddress) {
                     showInfo("successfully logged in");
                     $('#divCreateCert').show();
                     $('#divPrivateKeyCreateCert').hide();
-
-
                 }
                 else {
                     showInfo("you are not the administrator");
                 }
             });
-
     }//end createCertLogIn
 
 
-
+    //when user clicks on the Submit button - to upload the certificate image to IPFS
     $('#documentUploadButton').click(function () {
-        debugger;
         if ($('#documentForUpload')[0].files.length === 0) {
             return showError("please select a file to upload");
         }
         let fileReader = new window.FileReader();
 
         fileReader.onload = function () {
-
-            debugger;
             let fileBuffer = Buffer.from(fileReader.result);
 
             IPFS.files.add(fileBuffer, (err, result) => {
                 if (err)
                     return showError(err);
                 if (result) {
+                    //save the hash into a global variable
                      ipfsHash = result[0].hash;
                     $('#textareaCertificateImageHash').val(ipfsHash);
                 }
             })
         };
-
         fileReader.readAsArrayBuffer($('#documentForUpload')[0].files[0]);
     })
 
+    //to prompt for the details - and then create the new certificate using the contract method - "addCertificate"
+    //function addCertificate(uint staffId, string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate, string image)
     function createNewCert() {
-        
         let password = $('#passwordCreateCertDetails').val();
     
-
         decryptWallet(localStorage.JSON, password)
             .then((wallet) => {
                 wallet.provider = ethers.providers.getDefaultProvider('ropsten');
 
-                
+                //create a new instance of contract - because need signer info from wallet - 
+                //if not - will get error message - signer is NULL
                 let contractCreate = new Contract(contractAddress, contractABI, wallet);
                 showInfo("wallet successfully loaded");
 
@@ -640,10 +632,8 @@ $(document).ready(function () {
                     .then(txHash => {
                         console.log(txHash)
                     });
-
             });
-
-  
-  
     }//end createNewCert
+
+
 });
