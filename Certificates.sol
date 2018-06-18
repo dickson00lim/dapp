@@ -1,9 +1,8 @@
 pragma solidity ^0.4.22; 
 
 contract Certificates { 
-    mapping (uint => certContents[]) private userCertList; //by staff id - all courses attended
-    mapping (string => bool) private verifyCertificates; //based on IPFS generated hash - true or false
-    mapping (string => uint) private indexCertificates; //IPFS hash to array index in certs
+    mapping (uint => certContents[]) private userCertList; //staff id
+    mapping (string => bool) private verifyCertificates; //based on IPFS generated hash
     
 	struct certContents {
 	    uint staffId; //unique identifier
@@ -28,7 +27,8 @@ contract Certificates {
 		_;
 	}
 	
-	function addCertificate(uint staffId, string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate, string image) public onlyOwner { 
+	
+	function addCertificate(uint staffId, string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate) public onlyOwner { 
         certContents memory tmp;
         
         tmp.staffId = staffId;
@@ -38,33 +38,26 @@ contract Certificates {
         tmp.duration = duration;
         tmp.issuer = issuer;
         tmp.issueDate = issueDate;
-        tmp.image = image;
+        tmp.image = "";
         
 		certs.push(tmp); 
-		
 		userCertList[staffId].push(tmp);
-		indexCertificates[tmp.image] = certs.length - 1;
-		verifyCertificates[tmp.image] = true;
 	} 
 	
 	function countCertificates() view public returns (uint256) { 
 		return certs.length; 
 	} 
 	
-	function countHolderCertificates(uint Id) view public returns (uint256) {
-	    return userCertList[Id].length;
-	}
-	
-	function getCertificate(string hash) view public returns (uint staffId, string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate) {
-        uint index = indexCertificates[hash];
+	function getCertificate(uint index) view public returns ( string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate, string image) {
 	    return (
-	        certs[index].staffId,
+
 	        certs[index].certHolder, 
 	        certs[index].courseAttended,
 	        certs[index].dateAttended,
             certs[index].duration,
             certs[index].issuer,
-            certs[index].issueDate
+            certs[index].issueDate,
+            certs[index].image
 	        );
 	} 
 	
