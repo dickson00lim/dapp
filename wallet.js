@@ -5,7 +5,7 @@ $(document).ready(function () {
     const derivationPath = "m/44'/60'/0'/0/";
     const provider = ethers.providers.getDefaultProvider('ropsten');
     const Contract = ethers.Contract;
-    const contractAddress = "0x420dec5eac3095580581ff56c4b299994480ee17";
+    const contractAddress = "0x97b878c78931ed68c3c163813c541a15cc1f22fd";
     const contractOwnerAddress = "0x8804FFe582C362c4c331492db19fBf5b6659c583";
     const contractABI =
         [
@@ -72,7 +72,27 @@ $(document).ready(function () {
                 "name": "certHolderToIndex",
                 "outputs": [
                     {
+                        "name": "certHolder",
+                        "type": "string"
+                    },
+                    {
                         "name": "courseAttended",
+                        "type": "string"
+                    },
+                    {
+                        "name": "dateAttended",
+                        "type": "string"
+                    },
+                    {
+                        "name": "duration",
+                        "type": "string"
+                    },
+                    {
+                        "name": "issueDate",
+                        "type": "string"
+                    },
+                    {
+                        "name": "image",
                         "type": "string"
                     }
                 ],
