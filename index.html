@@ -25,8 +25,9 @@
         <a href="#" id="linkShowAddressesAndBalances" class="after-login">View Addresses</a>
         <a href="#" id="linkSendTransaction" class="after-login">Send Transaction</a>
         <a href="#" id="linkDelete" class="after-login">Delete Wallet</a>
-        <a href="#" id="linkReadContract" class="after-login">Get Certificate Details</a>
         <a href="#" id="linkCreateNewCertificate" class="after-login">Add New Certificate</a>
+        <a href="#" id="linkReadContract" class="after-login">Get Certificate Details by image hash</a>
+        <a href="#" id="linkReadHolderContract" class="after-login">Get Certificate Details by staff ID</a>
     </header>
 
     <main>
@@ -50,6 +51,7 @@
                 <li><a href="https://github.com/ethers-io/ethers.js/"><b>Ethers.js</b></a> - complete Ethereum wallet implementation and library in JavaScript</li>
             </ul>
         </section>
+
         <section id="viewCreateNewWallet">
             <h1>Create a New Wallet</h1>
             <p>Generate a new wallet: random mnemonic + password -> encrypted JSON.</p>
@@ -58,6 +60,7 @@
             <p>JSON:</p>
             <textarea id="textareaCreateWalletResult" class="result" readonly="true"></textarea>
         </section>
+
         <section id="viewOpenWalletFromMnemonic">
             <h1>Open a Wallet From Mnemonic</h1>
             <p>Open a wallet: mnemonic + password -> encrypted JSON.</p>
@@ -68,6 +71,7 @@
             <p>JSON:</p>
             <textarea id="textareaOpenWalletResult" class="result" readonly="true"></textarea>
         </section>
+
         <section id="viewOpenWalletFromFile">
             <h1>Open a Wallet From JSON File</h1>
             <p>Open a JSON wallet: JSON + password -> checks if JSON is encrypted with password -> save encrypted JSON</p>
@@ -82,6 +86,7 @@
             <span>Enter password: </span><input type="password" id="passwordShowMnemonic">
             <input type="button" id="buttonShowMnemonic" value="Show Mnemonic" />
         </section>
+
         <section id="viewShowAddressesAndBalances">
             <h1>Show Addresses and Balances</h1>
             <p>Show Addresses and Balances: password -> unlock wallet -> derive the first 5 addresses and show their balances</p>
@@ -89,6 +94,7 @@
             <input type="button" id="buttonShowAddresses" value="Show Addresses" />
             <div id="divAddressesAndBalances"></div>
         </section>
+
         <section id="viewSendTransaction">
             <h1>Send Transaction</h1>
             <p>Send Transaction: password -> unlock wallet -> derive 5 addresses -> show transaction form -> fill form -> sign transaction -> broadcast transaction</p>
@@ -106,9 +112,10 @@
                 <textarea id="textareaSendTransactionResult" class="result" readonly="true"></textarea>
             </div>
         </section>
+
         <section id="viewReadContract">
             <h1>Read from Contract</h1>
-            <p>Read from contract</p>
+            <p>Read from contract by image hash</p>
             <div id="divPasswordReadContract">
                 <span>Enter password: </span><input type="password" id="passwordReadContract">
                 <input type="button" id="buttonUnlockReadContract" value="Unlock" />
@@ -118,9 +125,11 @@
                     <span>Enter image hash:</span><input type="text" id="imageHash">
                     <input type="button" id="buttonGetCertificateHolder" value="Get certificate holder details" />
                 </div>
-                <textarea id="textareaCertificateHolder" class="certificateHolder" readonly="true"></textarea>
+                <textarea readonly  id="textareaCertificateHolder" class="certificateHolder"></textarea>
+                <img id="imageCertificate" src="" />
             </div>
         </section>
+
         <section id="viewAddNewCert">
             <h1>Add New Certificates</h1>
             <p>Only administrators can add new certificates</p>
@@ -134,14 +143,29 @@
                 <p>Upload certificate image:</p>
                 <input type="file" id="documentForUpload" /><br />
                 <input type="button" id="documentUploadButton" value="Submit" /><br/>
-                <textarea id="textareaCertificateImageHash" class="certificateImageHash" readonly="true"></textarea>
+                <textarea readonly id="textareaCertificateImageHash" class="certificateImageHash"></textarea>
 
                 <span>Enter name of certificate holder: </span><input type="text" id="nameCreateCert"><br />
                 <input type="button" id="buttonCreateCert" value="Create new cert" />
             </div>
         </section>
+
+        <section id="viewReadHolderContract">
+            <h1>Get Certificate Details by Staff ID</h1>
+            <p>Read from contract by staff ID</p>
+            <div id="divPasswordReadContractById">
+                <span>Enter password: </span><input type="password" id="passwordReadContractById">
+                <input type="button" id="buttonUnlockReadContractById" value="Unlock" />
+            </div>
+            <div id="divReadContractById">
+                <div>
+                    <span>Enter staff ID:</span><input type="text" id="staffId">
+                    <input type="button" id="buttonGetCertificateById" value="Get staff ID certificate details" />
+                </div>
+            </div>
+        </section>
     </main>
 
-<footer>HD Wallet Demo</footer>
+<footer>Certificate DApp</footer>
 </body>
 </html>

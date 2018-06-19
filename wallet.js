@@ -250,6 +250,13 @@ $(document).ready(function () {
 
         showView("viewAddNewCert");
     });
+
+    $('#linkReadHolderContract').click(function () {
+        $('#divReadContractById').hide();
+        $('#passwordReadContractById').val('');
+
+        showView("viewReadHolderContract");
+    });
     //---
 
 
@@ -268,6 +275,9 @@ $(document).ready(function () {
 
     $('#buttonCreateCertLogIn').click(createCertLogIn);
     $('#buttonCreateCert').click(createNewCert);
+
+    $('#buttonUnlockReadContractById').click(readFromContractById);
+    $('#buttonGetCertificateById').click(getCertificateById);
 
     function showView(viewName) {
         // Hide all views and show the selected view only
@@ -560,12 +570,70 @@ $(document).ready(function () {
         //because transaction needs time to mine
         contract.getCertificate(hash)
             .then((certHolder) => {
+
+                let url = "https://ipfs.io/ipfs/" + hash;
+
                 $('#textareaCertificateHolder').val(certHolder);
+                $("#imageCertificate").attr("src", url);
+  
             })
             .catch((err) => {
                 console.log(err);
             });
     }//end getCertificateHolder
+
+
+    //Method that reads from a contract by staff ID
+    //Verify the password - if correct - then shows the division that will show the certificate details for that staff ID
+    function readFromContractById() {
+        let password = $('#passwordReadContractById').val();
+        let json = localStorage.JSON;
+
+        decryptWallet(json, password)
+            .then(wallet => {
+                showInfo("Wallet successfully unlocked");
+                //renderAddresses(wallet);
+                $('#divReadContractById').show();
+                $('#divPasswordReadContractById').hide();
+            })
+            .catch(showError)
+            .finally(() => {
+                $('#passwordReadContractById').val('');
+                hideLoadingBar();
+            });
+    }//---end readFromContractByID
+
+    //show the details of the certificate after verifying password
+    function getCertificateById() {
+        let staffId = $('#staffId').val();
+
+        //make a promise to wait for the chain to retrieve the results
+        //because transaction needs time to mine
+        contract.countHolderCertificates(staffId)
+            .then((numCert) => {
+                let i = 0;
+                if (numCert > 0) {
+                    for (i = 0; i < numCert; i++) {
+                        contract.certHolderToIndex(staffId, i)
+                            .then((cert) => {
+                                $('#textareaCertificateHolder').val(cert);
+                                let url = "https://ipfs.io/ipfs/" + cert.image;
+                                $("#imageCertificate").attr("src", url);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
+                }
+                else {
+                    showInfo("This staff ID does not have any certificate");
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }//end getCertificateHolderByID
+
 
     //verify password - before showing division to create a new certificate
     function createCertLogIn() {
