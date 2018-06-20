@@ -83,6 +83,15 @@ contract("Certificates", function (accounts) {
         assert.equal(testCert.toString(), "123,John,Java,7 Sep 2018,3 days,CET,1 Oct 2018", "did not add second cert correctly");
     });
 
+    it("count third certificate", async function () {
+        //count the number of certificates - count should be 3
+        let cert = await Certificates.deployed();
+
+        let num = await cert.countCertificates();
+
+        assert.equal(num.toString(), "3", "did not count cert correctly");
+    });
+
     it("count certificate for staff ID 123", async function () {
         //count the number of certificates based on staff ID 123 - count should be 2
         let cert = await Certificates.deployed();
