@@ -14,8 +14,8 @@ contract("Certificates", function (accounts) {
         assert.equal(testCert.toString(), "123,John,Blockchain,7 May 2018,30 days,CET,1 June 2018", "did not add cert correctly");
     });
 
+    //count the number of certificates - count should be 1
     it("count certificate", async function () {
-        //count the number of certificates - count should be 1
         let cert = await Certificates.deployed();
 
         let num = await cert.countCertificates();
@@ -23,8 +23,8 @@ contract("Certificates", function (accounts) {
         assert.equal(num.toString(), "1", "did not count cert correctly");
     });
 
+    //verify the certificate based on image hash - result should be true
     it("verify certificate", async function () {
-        //verify the certificate based on image hash - result should be true
         let cert = await Certificates.deployed();
 
         let verify = await cert.verifyCertificate("QmSCfVVZ8TCrWKoW5od9nhRC7DceGNM5THWUK6mmnWijj2");
@@ -44,8 +44,8 @@ contract("Certificates", function (accounts) {
         assert.equal(testCert.toString(), "789,Lily,Blockchain,7 May 2018,30 days,CET,1 June 2018", "did not add second cert correctly");
     });
 
+    //count the number of certificates - count should be 2
     it("count second certificate", async function () {
-        //count the number of certificates - count should be 2
         let cert = await Certificates.deployed();
 
         let num = await cert.countCertificates();
@@ -53,8 +53,8 @@ contract("Certificates", function (accounts) {
         assert.equal(num.toString(), "2", "did not count cert correctly");
     });
 
+    //count the number of certificates based on staff ID 123 - count should be 1
     it("count certificate for staff ID 123", async function () {
-        //count the number of certificates based on staff ID 123 - count should be 1
         let cert = await Certificates.deployed();
 
         let holderCount = await cert.countHolderCertificates(123);
@@ -62,8 +62,8 @@ contract("Certificates", function (accounts) {
         assert.equal(holderCount.toString(), "1", "did not count holder cert correctly");
     });
 
+    //get the details of certificates based on staff ID 123
     it("get certificate for staff ID 123", async function () {
-        //get the details of certificates based on staff ID 123
         let cert = await Certificates.deployed();
 
         let holderCert = await cert.certHolderToIndex(123, 0); //index 0 - first cert
@@ -83,8 +83,8 @@ contract("Certificates", function (accounts) {
         assert.equal(testCert.toString(), "123,John,Java,7 Sep 2018,3 days,CET,1 Oct 2018", "did not add second cert correctly");
     });
 
+    //count the number of certificates - count should be 3
     it("count third certificate", async function () {
-        //count the number of certificates - count should be 3
         let cert = await Certificates.deployed();
 
         let num = await cert.countCertificates();
@@ -92,8 +92,8 @@ contract("Certificates", function (accounts) {
         assert.equal(num.toString(), "3", "did not count cert correctly");
     });
 
+    //count the number of certificates based on staff ID 123 - count should be 2
     it("count certificate for staff ID 123", async function () {
-        //count the number of certificates based on staff ID 123 - count should be 2
         let cert = await Certificates.deployed();
 
         let holderCount = await cert.countHolderCertificates(123);
@@ -101,8 +101,8 @@ contract("Certificates", function (accounts) {
         assert.equal(holderCount.toString(), "2", "did not count holder cert correctly");
     });
 
+    //get the details of all certificates based on staff ID 123 - should have 2 certificates
     it("get all certificates for staff ID 123", async function () {
-        //get the details of certificates based on staff ID 123 - should have 2 certificates
         let cert = await Certificates.deployed();
 
         let holderCount = await cert.countHolderCertificates(123);
