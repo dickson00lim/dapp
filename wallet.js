@@ -5,7 +5,7 @@ $(document).ready(function () {
     const derivationPath = "m/44'/60'/0'/0/";
     const provider = ethers.providers.getDefaultProvider('ropsten');
     const Contract = ethers.Contract;
-    const contractAddress = "0x97b878c78931ed68c3c163813c541a15cc1f22fd";
+    const contractAddress = "0xeb51b8bca8e0558fdd945345edcffc37b98ea6c1";
     const contractOwnerAddress = "0x8804FFe582C362c4c331492db19fBf5b6659c583";
     const contractABI =
         [
@@ -633,17 +633,21 @@ $(document).ready(function () {
             .then((numCert) => {
                 let i = 0;
                 if (numCert > 0) {
+                    let html = $('<div>');
                     for (i = 0; i < numCert; i++) {
                         contract.certHolderToIndex(staffId, i)
                             .then((cert) => {
-                                $('#textareaCertificateHolder').val(cert);
+                                let div = $('<div>');
                                 let url = "https://ipfs.io/ipfs/" + cert.image;
-                                $("#imageCertificate").attr("src", url);
+
+                                div
+                                    .append($(`<p>Cert: ${cert}</p>`))
+                                    .append($(`<img src="${url}" />`));
+                                html.append(div);
                             })
-                            .catch((err) => {
-                                console.log(err);
-                            });
                     }
+                    html.append('</div>');
+                    $('#divReadContractById').append(html)
                 }
                 else {
                     showInfo("This staff ID does not have any certificate");
@@ -692,7 +696,8 @@ $(document).ready(function () {
                 if (result) {
                     //save the hash into a global variable
                      ipfsHash = result[0].hash;
-                    $('#textareaCertificateImageHash').val(ipfsHash);
+                    //$('#textareaCertificateImageHash').val(ipfsHash);
+                    ipfsHash = $('#textareaCertificateImageHash').val();
                 }
             })
         };
@@ -713,10 +718,16 @@ $(document).ready(function () {
                 let contractCreate = new Contract(contractAddress, contractABI, wallet);
                 showInfo("wallet successfully loaded");
 
-                //--get other details for the new certificate
+                //--get other details for the new certificate               
+                let id = $('#idCreateCert').val();
                 let name = $('#nameCreateCert').val();
+                let course = $('#courseCreateCert').val();
+                let dateAttend = $('#dateAttendCreateCert').val();
+                let duration = $('#durationCreateCert').val();
+                let issuer = $('#issuerCreateCert').val();
+                let dateIssued = $('#dateIssuedCreateCert').val();
 
-                contractCreate.addCertificate(123, name, "Blockchain", "7 May 2018", "30 days", "CET", "1 June 2018", ipfsHash)
+                contractCreate.addCertificate(id, name, course, dateAttend, duration, issuer, dateIssued, "QmSCfVVZ8TCrWKoW5od9nhRC7DceGNM5THWUK6mmnWijj2")
                     .then(txHash => {
                         console.log(txHash)
                     });

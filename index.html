@@ -142,10 +142,16 @@
 
                 <p>Upload certificate image:</p>
                 <input type="file" id="documentForUpload" /><br />
-                <input type="button" id="documentUploadButton" value="Submit" /><br/>
-                <textarea readonly id="textareaCertificateImageHash" class="certificateImageHash"></textarea>
-
+                <input type="button" id="documentUploadButton" value="Submit" /><br />
+                <textarea id="textareaCertificateImageHash" class="certificateImageHash"></textarea>
+                <span>Enter staff ID of certificate holder: </span><input type="text" id="idCreateCert"><br />
                 <span>Enter name of certificate holder: </span><input type="text" id="nameCreateCert"><br />
+                <span>Enter course attended: </span><input type="text" id="courseCreateCert"><br />
+                <span>Enter date attended: </span><input type="text" id="dateAttendCreateCert"><br />
+                <span>Enter name of duration: </span><input type="text" id="durationCreateCert"><br />
+                <span>Enter certificate issuer: </span><input type="text" id="issuerCreateCert"><br />
+                <span>Enter certificate issue date: </span><input type="text" id="dateIssuedCreateCert"><br />
+                
                 <input type="button" id="buttonCreateCert" value="Create new cert" />
             </div>
         </section>
