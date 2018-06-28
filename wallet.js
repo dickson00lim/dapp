@@ -5,8 +5,7 @@ $(document).ready(function () {
     const derivationPath = "m/44'/60'/0'/0/";
     const provider = ethers.providers.getDefaultProvider('ropsten');
     const Contract = ethers.Contract;
-    const contractAddress = "0xeb51b8bca8e0558fdd945345edcffc37b98ea6c1";
-    const contractOwnerAddress = "0x8804FFe582C362c4c331492db19fBf5b6659c583";
+    const contractAddress = "0xfd7a361d920233e18738121714a24d743d996b24";
     const contractABI =
         [
             {
@@ -427,6 +426,7 @@ $(document).ready(function () {
                         return showError("invalid JSON file");
 
                     localStorage['JSON'] = json;
+                    wallet.provider = ethers.providers.getDefaultProvider('ropsten');
                     showInfo("wallet successfully loaded");
                     showLoggedInButtons();
                 })
@@ -719,7 +719,7 @@ $(document).ready(function () {
                 showInfo("wallet successfully loaded");
 
                 //--get other details for the new certificate               
-                let id = $('#idCreateCert').val();
+                let id = parseInt($('#idCreateCert').val());
                 let name = $('#nameCreateCert').val();
                 let course = $('#courseCreateCert').val();
                 let dateAttend = $('#dateAttendCreateCert').val();
@@ -727,7 +727,7 @@ $(document).ready(function () {
                 let issuer = $('#issuerCreateCert').val();
                 let dateIssued = $('#dateIssuedCreateCert').val();
 
-                contractCreate.addCertificate(id, name, course, dateAttend, duration, issuer, dateIssued, "QmSCfVVZ8TCrWKoW5od9nhRC7DceGNM5THWUK6mmnWijj2")
+                contractCreate.addCertificate(id, name, course, dateAttend, duration, issuer, dateIssued, ipfsHash)
                     .then(txHash => {
                         console.log(txHash)
                     });
