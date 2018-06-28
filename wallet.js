@@ -6,6 +6,7 @@ $(document).ready(function () {
     const provider = ethers.providers.getDefaultProvider('ropsten');
     const Contract = ethers.Contract;
     const contractAddress = "0xfd7a361d920233e18738121714a24d743d996b24";
+    const contractOwnerAddress = "0x8804FFe582C362c4c331492db19fBf5b6659c583";
     const contractABI =
         [
             {
