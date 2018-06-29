@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    const IPFS = window.IpfsApi('localhost', '5001');
+    const IPFS = window.IpfsApi('localhost', '5001', { protocol: 'https' });
     const Buffer = IPFS.Buffer;
 
     const derivationPath = "m/44'/60'/0'/0/";
@@ -742,7 +742,7 @@ $(document).ready(function () {
         contractCreate.addCertificate(id, name, course, dateAttend, duration, issuer, dateIssued, "QmbWztEjfnXfcVoBgR8WvdDL9tUxgfYgEtFQvvT2E51t4J", function (err, txHash) {
             if (err)
                 return showError("Smart contract call failed: " + err);
-            showInfo(`Document ${ipfsHash} <b>successfully added</b> to the registry. Transaction hash: ${txHash}`);
+            showInfo(`Certificate ${ipfsHash} <b>successfully added</b>. Transaction hash: ${txHash}`);
         })
         
                    /* .then(txHash => {
