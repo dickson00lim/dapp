@@ -5,7 +5,7 @@ $(document).ready(function () {
     const derivationPath = "m/44'/60'/0'/0/";
     const provider = ethers.providers.getDefaultProvider('ropsten');
     const Contract = ethers.Contract;
-    const contractAddress = "0xfd7a361d920233e18738121714a24d743d996b24";
+    const contractAddress = "0x0fe20d9c57bb44ca42d44e26e96d5a23bf2b3d6e";
     const contractOwnerAddress = "0x8804FFe582C362c4c331492db19fBf5b6659c583";
     const contractABI =
         [
@@ -568,7 +568,7 @@ $(document).ready(function () {
     function readFromContract() {
         let password = $('#passwordReadContract').val();
         let json = localStorage.JSON;
-        
+
         decryptWallet(json, password)
             .then(wallet => {
                 showInfo("Wallet successfully unlocked");
@@ -596,7 +596,7 @@ $(document).ready(function () {
 
                 $('#textareaCertificateHolder').val(certHolder);
                 $("#imageCertificate").attr("src", url);
-  
+
             })
             .catch((err) => {
                 console.log(err);
@@ -689,15 +689,19 @@ $(document).ready(function () {
         let fileReader = new window.FileReader();
 
         fileReader.onload = function () {
+            if (typeof web3 == 'undefined')
+                return showError("please install metamask to access the Ethereum Web3 API from your web browser");
+
             let fileBuffer = Buffer.from(fileReader.result);
 
+           
             IPFS.files.add(fileBuffer, (err, result) => {
                 if (err)
                     return showError(err);
                 if (result) {
                     //save the hash into a global variable
-                     ipfsHash = result[0].hash;
-                    //$('#textareaCertificateImageHash').val(ipfsHash);
+                    ipfsHash = result[0].hash;
+                    $('#textareaCertificateImageHash').val(ipfsHash);
                     ipfsHash = $('#textareaCertificateImageHash').val();
                 }
             })
@@ -708,31 +712,43 @@ $(document).ready(function () {
     //to prompt for the details - and then create the new certificate using the contract method - "addCertificate"
     //function addCertificate(uint staffId, string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate, string image)
     function createNewCert() {
-        let password = $('#passwordCreateCertDetails').val();
+        /*    let password = $('#passwordCreateCertDetails').val();
+        
+            decryptWallet(localStorage.JSON, password)
+                .then((wallet) => {
+                    wallet.provider = ethers.providers.getDefaultProvider('ropsten');
     
-        decryptWallet(localStorage.JSON, password)
-            .then((wallet) => {
-                wallet.provider = ethers.providers.getDefaultProvider('ropsten');
+                    //create a new instance of contract - because need signer info from wallet - 
+                    //if not - will get error message - signer is NULL
+                    let contractCreate = new Contract(contractAddress, contractABI, wallet);
+                    showInfo("wallet successfully loaded");*/
 
-                //create a new instance of contract - because need signer info from wallet - 
-                //if not - will get error message - signer is NULL
-                let contractCreate = new Contract(contractAddress, contractABI, wallet);
-                showInfo("wallet successfully loaded");
+        if (typeof web3 == 'undefined')
+            return showError("please install metamask to access the Ethereum Web3 API from your web browser");
 
-                //--get other details for the new certificate               
-                let id = parseInt($('#idCreateCert').val());
-                let name = $('#nameCreateCert').val();
-                let course = $('#courseCreateCert').val();
-                let dateAttend = $('#dateAttendCreateCert').val();
-                let duration = $('#durationCreateCert').val();
-                let issuer = $('#issuerCreateCert').val();
-                let dateIssued = $('#dateIssuedCreateCert').val();
+        let contractCreate = web3.eth.contract(contractABI).at(contractAddress);
 
-                contractCreate.addCertificate(id, name, course, dateAttend, duration, issuer, dateIssued, ipfsHash)
-                    .then(txHash => {
+        //--get other details for the new certificate               
+        let id = parseInt($('#idCreateCert').val());
+        let name = $('#nameCreateCert').val();
+        let course = $('#courseCreateCert').val();
+        let dateAttend = $('#dateAttendCreateCert').val();
+        let duration = $('#durationCreateCert').val();
+        let issuer = $('#issuerCreateCert').val();
+        let dateIssued = $('#dateIssuedCreateCert').val();
+
+
+
+        contractCreate.addCertificate(id, name, course, dateAttend, duration, issuer, dateIssued, "QmbWztEjfnXfcVoBgR8WvdDL9tUxgfYgEtFQvvT2E51t4J", function (err, txHash) {
+            if (err)
+                return showError("Smart contract call failed: " + err);
+            showInfo(`Document ${ipfsHash} <b>successfully added</b> to the registry. Transaction hash: ${txHash}`);
+        })
+        
+                   /* .then(txHash => {
                         console.log(txHash)
-                    });
-            });
+                    });*/
+           // });
     }//end createNewCert
 
 
