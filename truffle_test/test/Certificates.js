@@ -23,13 +23,22 @@ contract("Certificates", function (accounts) {
         assert.equal(num.toString(), "1", "did not count cert correctly");
     });
 
-    //verify the certificate based on image hash - result should be true
-    it("verify certificate", async function () {
+    //verify the certificate based on existing image hash - result should be true
+    it("verify existing certificate", async function () {
         let cert = await Certificates.deployed();
 
         let verify = await cert.verifyCertificate("QmSCfVVZ8TCrWKoW5od9nhRC7DceGNM5THWUK6mmnWijj2");
 
         assert.equal(verify.toString(), "true", "did not verify cert correctly");
+    });
+
+    //verify the certificate based on non-existing image hash - result should be true
+    it("verify non existing certificate", async function () {
+        let cert = await Certificates.deployed();
+
+        let verify = await cert.verifyCertificate("nnSCfVVZ8TCrWKoW5od9nhRC7DceGNM5THWUK6mmnWijj2");
+
+        assert.equal(verify.toString(), "false", "did not verify cert correctly");
     });
 
     //add the second certificate - of another staff ID
