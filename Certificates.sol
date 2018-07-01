@@ -43,9 +43,9 @@ contract Certificates {
         
 		certs.push(tmp); 
 		
-		userCertList[staffId].push(tmp);
-		indexCertificates[tmp.image] = certs.length - 1;
-		verifyCertificates[tmp.image] = true;
+		userCertList[staffId].push(tmp); //staff id to certificate
+		indexCertificates[tmp.image] = certs.length - 1; //image hash to certs array index
+		verifyCertificates[tmp.image] = true; //image hash to true 
 	} 
 	
 	function getCertificate(string hash) view public returns (uint staffId, string certHolder, string courseAttended, string dateAttended, string duration, string issuer, string issueDate) {
